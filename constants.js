@@ -1,0 +1,1 @@
+const COORD_FRAME_AXES_LENGTH = 60;

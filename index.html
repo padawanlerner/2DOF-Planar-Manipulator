@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>2DOF Planar Manipulator</title>
+    <style media="screen">
+      body{
+        background-color: rgb(116, 174, 246);
+        text-align: center;
+      }
+      canvas{
+        border: 2px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="500" height="500"></canvas>
+    <br>
+    <label for="theta1">&Theta;<sub>1</sub></label>
+    <input type="range"  id = "theta1" name="theta1" value="0" min = "0" max = "360">
+    <br>
+    <label for="theta2">&Theta;<sub>2</sub></label>
+    <input type="range"  id = "theta2" name="theta2" value="0" min = "0" max = "360">
+
+  <script src="constants.js" charset="utf-8"></script>
+  <script src="classes.js" charset="utf-8"></script>
+  <script src="functions.js" charset="utf-8"></script>
+  <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function(){
+
+      const canvas = document.getElementById('canvas')
+
+      let frame0Origin = new Point(canvas.width/2,canvas.height/2)
+      let frame0 = new CoordinateFrame(frame0Origin,0)
+      frame0.draw(canvas.getContext("2d"))
+
+      let Link1 = new Link(75, "rgb(0, 23, 120)");
+      let endPt1 = new Point(frame0.originPos.x + Link1.length*Math.cos(-Math.PI/4), frame0.originPos.y + Link1.length*Math.sin(-Math.PI/4))
+
+
+      let frame1Origin = Link1.draw(canvas.getContext("2d"),frame0.originPos, endPt1)
+      let frame1 = new CoordinateFrame(frame1Origin, Math.PI/4)
+      frame1.draw(canvas.getContext("2d"))
+
+      let Link2 = new Link(75, "rgb(12, 62, 113)");
+      let endPt2 = new Point(
+        frame0.originPos.x + Link1.length*Math.cos(Math.PI/4) + Link2.length*Math.cos(-(Math.PI/4 + Math.PI/4+.2)),
+        frame0.originPos.y + Link1.length*Math.sin(Math.PI/4) + Link2.length*Math.sin(-(Math.PI/4 + Math.PI/4+.2))
+      )
+
+      Link2.draw(canvas.getContext("2d"),frame1.originPos, endPt2)
+
+      document.getElementById('theta1').addEventListener("input",function(){
+        let t2 = document.getElementById('theta2').value
+        updateGraphic(this.value*Math.PI/180, t2*Math.PI/180)
+      })
+
+      document.getElementById('theta2').addEventListener("input",function(){
+        let t1 = document.getElementById('theta1').value
+        updateGraphic(t1*Math.PI/180, this.value*Math.PI/180)
+      })
+
+      function updateGraphic(t_1,t_2){
+        let ctx = canvas.getContext("2d")
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        frame0.draw(canvas.getContext("2d"))
+        endPt1 = new Point(frame0.originPos.x + Link1.length*Math.cos(-t_1), frame0.originPos.y + Link1.length*Math.sin(-t_1))
+        Link1.draw(ctx,frame0.originPos, endPt1)
+        frame1.setOrigin(endPt1, -t_1);
+        frame1.draw(ctx)
+
+        endPt2 = new Point(
+          frame0.originPos.x + Link1.length*Math.cos(-t_1) + Link2.length*Math.cos(-(t_1 + t_2)),
+          frame0.originPos.y + Link1.length*Math.sin(-t_1) + Link2.length*Math.sin(-(t_1 + t_2))
+        )
+        Link2.draw(canvas.getContext("2d"),frame1.originPos, endPt2)
+      }
+
+
+    })
+      // let App = {
+      // }
+      //   canvas: document.getElementById('canvas'),
+      //
+      // frame1.draw(App.canvas.getContext("2d"))
+      //
+      // let ctx = c.getContext('2d')
+      // ctx.translate(c.width/2,c.height/2)
+      // ctx.beginPath();
+      // ctx.moveTo(0,0);
+      // ctx.lineTo(20,20);
+      // ctx.stroke();
+      // clearCanvas(c)
+  </script>
+
+  </body>
+</html>
