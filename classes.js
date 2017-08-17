@@ -41,7 +41,7 @@ CoordinateFrame.prototype.setOrigin = function(pt,angle){
   this.orientation = angle;
 }
 
-CoordinateFrame.prototype.draw = function(ctx){
+CoordinateFrame.prototype.draw = function(ctx, c){
   // ctx.translate(c.width/2,c.height/2)
   let y_start = new Point(this.originPos.x,this.originPos.y +COORD_FRAME_AXES_LENGTH/2);
   let y_end = new Point(this.originPos.x,this.originPos.y -COORD_FRAME_AXES_LENGTH/2);
@@ -64,11 +64,21 @@ CoordinateFrame.prototype.draw = function(ctx){
   ctx.moveTo(x_start.x, x_start.y);
   ctx.lineTo(x_end.x,x_end.y);
   ctx.stroke();
+  ctx.save();
+  ctx.fillText("x",x_start.x+2, x_start.y+2);
+  ctx.translate(c.width/2, c.height/2)
+  ctx.rotate(this.orientation);
+  ctx.restore()
 
   ctx.beginPath();
   ctx.moveTo(y_start.x,y_start.y);
   ctx.lineTo(y_end.x,y_end.y);
   ctx.stroke();
+  ctx.save();
+  ctx.fillText("y",y_end.x+2, y_end.y+2);
+  ctx.translate(c.width/2, c.height/2)
+  ctx.rotate(this.orientation);
+  ctx.restore()
 
 }
 
