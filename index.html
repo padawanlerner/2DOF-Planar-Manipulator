@@ -27,28 +27,33 @@
   <script src="functions.js" charset="utf-8"></script>
   <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function(){
+      let t1_0 = document.getElementById('theta1').value * Math.PI/180
+      let t2_0 = document.getElementById('theta2').value * Math.PI/180
 
       const canvas = document.getElementById('canvas')
 
       let frame0Origin = new Point(canvas.width/2,canvas.height/2)
       let frame0 = new CoordinateFrame(frame0Origin,0)
-      frame0.draw(canvas.getContext("2d"),canvas)
+      frame0.draw(canvas.getContext("2d"),canvas,"0")
 
       let Link1 = new Link(75, "rgb(0, 23, 120)");
-      let endPt1 = new Point(frame0.originPos.x + Link1.length*Math.cos(-Math.PI/4), frame0.originPos.y + Link1.length*Math.sin(-Math.PI/4))
 
+      let endPt1 = new Point(frame0.originPos.x + Link1.length*Math.cos(-t1_0), frame0.originPos.y + Link1.length*Math.sin(-t1_0))
 
       let frame1Origin = Link1.draw(canvas.getContext("2d"),frame0.originPos, endPt1)
-      let frame1 = new CoordinateFrame(frame1Origin, Math.PI/4)
-      frame1.draw(canvas.getContext("2d"), canvas)
+      let frame1 = new CoordinateFrame(frame1Origin, -t1_0)
+      frame1.draw(canvas.getContext("2d"), canvas,"1")
 
       let Link2 = new Link(75, "rgb(12, 62, 113)");
       let endPt2 = new Point(
-        frame0.originPos.x + Link1.length*Math.cos(Math.PI/4) + Link2.length*Math.cos(-(Math.PI/4 + Math.PI/4+.2)),
-        frame0.originPos.y + Link1.length*Math.sin(Math.PI/4) + Link2.length*Math.sin(-(Math.PI/4 + Math.PI/4+.2))
+        frame0.originPos.x + Link1.length*Math.cos(-t1_0) + Link2.length*Math.cos(-(t1_0 + t2_0)),
+        frame0.originPos.y + Link1.length*Math.sin(-t1_0) + Link2.length*Math.sin(-(t1_0 + t2_0))
       )
 
       Link2.draw(canvas.getContext("2d"),frame1.originPos, endPt2)
+      let frame2Origin = Link2.draw(canvas.getContext("2d"),frame1.originPos, endPt2)
+      let frame2 = new CoordinateFrame(frame2Origin, -(t1_0+t2_0))
+      frame2.draw(canvas.getContext("2d"), canvas,"2")
 
       document.getElementById('theta1').addEventListener("input",function(){
         let t2 = document.getElementById('theta2').value
@@ -64,17 +69,19 @@
       function updateGraphic(t_1,t_2){
         let ctx = canvas.getContext("2d")
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        frame0.draw(ctx,canvas)
+        frame0.draw(ctx,canvas, "0")
         endPt1 = new Point(frame0.originPos.x + Link1.length*Math.cos(-t_1), frame0.originPos.y + Link1.length*Math.sin(-t_1))
         Link1.draw(ctx,frame0.originPos, endPt1)
         frame1.setOrigin(endPt1, -t_1);
-        frame1.draw(ctx,canvas)
+        frame1.draw(ctx,canvas,"1")
 
         endPt2 = new Point(
           frame0.originPos.x + Link1.length*Math.cos(-t_1) + Link2.length*Math.cos(-(t_1 + t_2)),
           frame0.originPos.y + Link1.length*Math.sin(-t_1) + Link2.length*Math.sin(-(t_1 + t_2))
         )
         Link2.draw(canvas.getContext("2d"),frame1.originPos, endPt2)
+        frame2.setOrigin(endPt2, -t_2-t_1);
+        frame2.draw(canvas.getContext("2d"), canvas,"2")
       }
 
 
