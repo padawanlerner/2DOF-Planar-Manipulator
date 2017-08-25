@@ -67,7 +67,7 @@ CoordinateFrame.prototype.draw = function(ctx, c, label){
   ctx.lineTo(x_end.x,x_end.y);
   ctx.stroke();
   ctx.save();
-  ctx.fillText("x"+newLabel,x_start.x+2, x_start.y+2);
+  ctx.fillText("x"+newLabel,x_start.x+2, x_start.y-5);
   ctx.translate(c.width/2, c.height/2)
   ctx.rotate(this.orientation);
   ctx.restore()
@@ -77,7 +77,7 @@ CoordinateFrame.prototype.draw = function(ctx, c, label){
   ctx.lineTo(y_end.x,y_end.y);
   ctx.stroke();
   ctx.save();
-  ctx.fillText("y"+newLabel,y_end.x+2, y_end.y+2);
+  ctx.fillText("y"+newLabel,y_end.x+2, y_end.y-5);
   ctx.translate(c.width/2, c.height/2)
   ctx.rotate(this.orientation);
   ctx.restore()

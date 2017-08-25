@@ -11,24 +11,170 @@
       canvas{
         border: 2px solid black;
       }
+      .mainWrapper{
+        display: flex;
+        justify-content: space-around;
+      }
+      .mainWrapper div{
+        /*border: 1px solid red;*/
+      }
     </style>
+    <!-- uncomment this if you aren't using firefox. Results may vary! -->
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=MML_CHTML"> </script>
+
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"> </script> -->
   </head>
   <body>
-    <canvas id="canvas" width="500" height="500"></canvas>
+    <canvas id="canvas" width="500" height="300"></canvas>
     <br>
     <label for="theta1">&Theta;<sub>1</sub></label>
-    <input type="range"  id = "theta1" name="theta1" value="0" min = "0" max = "360">
+    <input type="range" id = "theta1" name="theta1" value="0" min = "0" max = "360">
+    <span id = "t1_out"></span>
     <br>
     <label for="theta2">&Theta;<sub>2</sub></label>
     <input type="range"  id = "theta2" name="theta2" value="0" min = "0" max = "360">
+    <span id = "t2_out"></span>
+    <div class="mainWrapper">
+      <div class="matrix">
+        <h2>R01</h2>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <mrow>
+            <mo>[</mo>
+              <mtable id = "a">
+                <mtr>
+                  <mn id = "a_11"></mn>
+                  <mn id = "a_12"></mn>
+                </mtr>
+                <mtr>
+                  <mn id = "a_21"></mn>
+                  <mn id = "a_22"></mn>
+                </mtr>
+              </mtable>
+            <mo>]</mo>
+          </mrow>
 
+        </math>
+      </div>
+      <div class="matrix">
+        <h2>R12</h2>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <mrow>
+            <mo>[</mo>
+              <mtable id = "b">
+                <mtr>
+                  <mn id = "b_11"></mn>
+                  <mn id = "b_12"></mn>
+                </mtr>
+                <mtr>
+                  <mn id = "b_21"></mn>
+                  <mn id = "b_22"></mn>
+                </mtr>
+              </mtable>
+            <mo>]</mo>
+          </mrow>
+
+        </math>
+      </div>
+
+      <div class="matrix">
+        <h2>R02</h2>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <mrow>
+            <mo>[</mo>
+              <mtable id = "c">
+                <mtr>
+                  <mn id = "c_11"></mn>
+                  <mn id = "c_12"></mn>
+                </mtr>
+                <mtr>
+                  <mn id = "c_21"></mn>
+                  <mn id = "c_22"></mn>
+                </mtr>
+              </mtable>
+            <mo>]</mo>
+          </mrow>
+
+        </math>
+      </div>
+
+
+    </div>
+    <div class="mainWrapper">
+      <div class="matrix">
+        <h2>T01</h2>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <mrow>
+            <mo>[</mo>
+              <mtable id = "d">
+                <mtr>
+                  <mn id = "d_11"></mn>
+                  <mn id = "d_12"></mn>
+                </mtr>
+                <mtr>
+                  <mn id = "d_21"></mn>
+                  <mn id = "d_22"></mn>
+                </mtr>
+              </mtable>
+            <mo>]</mo>
+          </mrow>
+
+        </math>
+      </div>
+      <div class="matrix">
+        <h2>T12</h2>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <mrow>
+            <mo>[</mo>
+              <mtable id = "e">
+                <mtr>
+                  <mn id = "e_11"></mn>
+                  <mn id = "e_12"></mn>
+                </mtr>
+                <mtr>
+                  <mn id = "e_21"></mn>
+                  <mn id = "e_22"></mn>
+                </mtr>
+              </mtable>
+            <mo>]</mo>
+          </mrow>
+
+        </math>
+      </div>
+
+      <div class="matrix">
+        <h2>T02</h2>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <mrow>
+            <mo>[</mo>
+              <mtable id = "f">
+                <mtr>
+                  <mn id = "f_11"></mn>
+                  <mn id = "f_12"></mn>
+                </mtr>
+                <mtr>
+                  <mn id = "f_21"></mn>
+                  <mn id = "f_22"></mn>
+                </mtr>
+              </mtable>
+            <mo>]</mo>
+          </mrow>
+
+        </math>
+      </div>
+
+
+    </div>
   <script src="constants.js" charset="utf-8"></script>
   <script src="classes.js" charset="utf-8"></script>
   <script src="functions.js" charset="utf-8"></script>
   <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function(){
+
       let t1_0 = document.getElementById('theta1').value * Math.PI/180
       let t2_0 = document.getElementById('theta2').value * Math.PI/180
+      document.getElementById('t1_out').innerHTML = document.getElementById('theta1').value
+      document.getElementById('t2_out').innerHTML = document.getElementById('theta2').value
 
       const canvas = document.getElementById('canvas')
 
@@ -36,7 +182,7 @@
       let frame0 = new CoordinateFrame(frame0Origin,0)
       frame0.draw(canvas.getContext("2d"),canvas,"0")
 
-      let Link1 = new Link(75, "rgb(0, 23, 120)");
+      let Link1 = new Link(60, "rgb(0, 23, 120)");
 
       let endPt1 = new Point(frame0.originPos.x + Link1.length*Math.cos(-t1_0), frame0.originPos.y + Link1.length*Math.sin(-t1_0))
 
@@ -44,7 +190,7 @@
       let frame1 = new CoordinateFrame(frame1Origin, -t1_0)
       frame1.draw(canvas.getContext("2d"), canvas,"1")
 
-      let Link2 = new Link(75, "rgb(12, 62, 113)");
+      let Link2 = new Link(60, "rgb(12, 62, 113)");
       let endPt2 = new Point(
         frame0.originPos.x + Link1.length*Math.cos(-t1_0) + Link2.length*Math.cos(-(t1_0 + t2_0)),
         frame0.originPos.y + Link1.length*Math.sin(-t1_0) + Link2.length*Math.sin(-(t1_0 + t2_0))
@@ -55,13 +201,19 @@
       let frame2 = new CoordinateFrame(frame2Origin, -(t1_0+t2_0))
       frame2.draw(canvas.getContext("2d"), canvas,"2")
 
+      updateR01(t1_0);
+      updateR12(t2_0);
+      updateR02();
+
       document.getElementById('theta1').addEventListener("input",function(){
         let t2 = document.getElementById('theta2').value
+        document.getElementById('t1_out').innerHTML = this.value
         updateGraphic(this.value*Math.PI/180, t2*Math.PI/180)
       })
 
       document.getElementById('theta2').addEventListener("input",function(){
         let t1 = document.getElementById('theta1').value
+        document.getElementById('t2_out').innerHTML = this.value
         updateGraphic(t1*Math.PI/180, this.value*Math.PI/180)
       })
 
@@ -82,23 +234,49 @@
         Link2.draw(canvas.getContext("2d"),frame1.originPos, endPt2)
         frame2.setOrigin(endPt2, -t_2-t_1);
         frame2.draw(canvas.getContext("2d"), canvas,"2")
+        updateR01(t_1);
+        updateR12(t_2);
+        updateR02();
+
+      }
+
+      function updateR01(theta1){
+        document.getElementById('a_11').innerHTML = Math.round(1000*Math.cos(theta1))/1000
+        document.getElementById('a_12').innerHTML = -Math.round(1000*Math.sin(theta1))/1000
+        document.getElementById('a_21').innerHTML = Math.round(1000*Math.sin(theta1))/1000
+        document.getElementById('a_22').innerHTML = Math.round(1000*Math.cos(theta1))/1000
+        // console.log(document.getElementById('a_11'))
+
+      }
+      function updateR12(theta2){
+        document.getElementById('b_11').innerHTML = Math.round(1000*Math.cos(theta2))/1000
+        document.getElementById('b_12').innerHTML = -Math.round(1000*Math.sin(theta2))/1000
+        document.getElementById('b_21').innerHTML = Math.round(1000*Math.sin(theta2))/1000
+        document.getElementById('b_22').innerHTML = Math.round(1000*Math.cos(theta2))/1000
+      }
+
+      function updateR02(){
+        let a_11 = document.getElementById('a_11').innerHTML
+        let a_12 = document.getElementById('a_12').innerHTML
+        let a_21 = document.getElementById('a_21').innerHTML
+        let a_22 = document.getElementById('a_22').innerHTML
+
+        let b_11 = document.getElementById('b_11').innerHTML
+        let b_12 = document.getElementById('b_12').innerHTML
+        let b_21 = document.getElementById('b_21').innerHTML
+        let b_22 = document.getElementById('b_22').innerHTML
+
+        document.getElementById('c_11').innerHTML = Math.round((a_11 * b_11 + a_12*b_21)*1000)/1000;
+        document.getElementById('c_12').innerHTML = Math.round((a_11 * b_12 + a_12*b_22)*1000)/1000;
+        document.getElementById('c_21').innerHTML = Math.round((a_21 * b_11 + a_22*b_21)*1000)/1000;
+        document.getElementById('c_22').innerHTML = Math.round((a_21 * b_12 + a_22*b_22)*1000)/1000;
+
+
       }
 
 
+
     })
-      // let App = {
-      // }
-      //   canvas: document.getElementById('canvas'),
-      //
-      // frame1.draw(App.canvas.getContext("2d"))
-      //
-      // let ctx = c.getContext('2d')
-      // ctx.translate(c.width/2,c.height/2)
-      // ctx.beginPath();
-      // ctx.moveTo(0,0);
-      // ctx.lineTo(20,20);
-      // ctx.stroke();
-      // clearCanvas(c)
   </script>
 
   </body>
