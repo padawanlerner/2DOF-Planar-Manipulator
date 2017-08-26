@@ -20,7 +20,6 @@
       }
     </style>
     <!-- uncomment this if you aren't using firefox. Results may vary! -->
-
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=MML_CHTML"> </script>
 
     <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"> </script> -->
@@ -35,6 +34,12 @@
     <label for="theta2">&Theta;<sub>2</sub></label>
     <input type="range"  id = "theta2" name="theta2" value="0" min = "0" max = "360">
     <span id = "t2_out"></span>
+    <br>
+    <label for="L1">Link 1 length</label>
+    <input type="number" name = "L1" id="L1" value="1">
+    <br>
+    <label for="L2">Link 2 length</label>
+    <input type="number" name = "L2" id="L2" value="1">
     <div class="mainWrapper">
       <div class="matrix">
         <h2>R01</h2>
@@ -110,10 +115,17 @@
                 <mtr>
                   <mn id = "d_11"></mn>
                   <mn id = "d_12"></mn>
+                  <mn id = "d_13"></mn>
                 </mtr>
                 <mtr>
                   <mn id = "d_21"></mn>
                   <mn id = "d_22"></mn>
+                  <mn id = "d_23"></mn>
+                </mtr>
+                <mtr>
+                  <mn id = "d_31">0</mn>
+                  <mn id = "d_32">0</mn>
+                  <mn id = "d_33">1</mn>
                 </mtr>
               </mtable>
             <mo>]</mo>
@@ -130,10 +142,17 @@
                 <mtr>
                   <mn id = "e_11"></mn>
                   <mn id = "e_12"></mn>
+                  <mn id = "e_13"></mn>
                 </mtr>
                 <mtr>
                   <mn id = "e_21"></mn>
                   <mn id = "e_22"></mn>
+                  <mn id = "e_23"></mn>
+                </mtr>
+                <mtr>
+                  <mn id = "e_31">0</mn>
+                  <mn id = "e_32">0</mn>
+                  <mn id = "e_33">1</mn>
                 </mtr>
               </mtable>
             <mo>]</mo>
@@ -151,10 +170,17 @@
                 <mtr>
                   <mn id = "f_11"></mn>
                   <mn id = "f_12"></mn>
+                  <mn id = "f_13"></mn>
                 </mtr>
                 <mtr>
                   <mn id = "f_21"></mn>
                   <mn id = "f_22"></mn>
+                  <mn id = "f_23"></mn>
+                </mtr>
+                <mtr>
+                  <mn id = "f_31">0</mn>
+                  <mn id = "f_32">0</mn>
+                  <mn id = "f_33">1</mn>
                 </mtr>
               </mtable>
             <mo>]</mo>
@@ -201,9 +227,9 @@
       let frame2 = new CoordinateFrame(frame2Origin, -(t1_0+t2_0))
       frame2.draw(canvas.getContext("2d"), canvas,"2")
 
-      updateR01(t1_0);
-      updateR12(t2_0);
-      updateR02();
+      updateT01(t1_0);
+      updateT12(t2_0);
+      updateT02();
 
       document.getElementById('theta1').addEventListener("input",function(){
         let t2 = document.getElementById('theta2').value
@@ -234,42 +260,80 @@
         Link2.draw(canvas.getContext("2d"),frame1.originPos, endPt2)
         frame2.setOrigin(endPt2, -t_2-t_1);
         frame2.draw(canvas.getContext("2d"), canvas,"2")
-        updateR01(t_1);
-        updateR12(t_2);
-        updateR02();
+        updateT01(t_1);
+        updateT12(t_2);
+        updateT02();
 
       }
 
-      function updateR01(theta1){
+      function updateT01(theta1){
         document.getElementById('a_11').innerHTML = Math.round(1000*Math.cos(theta1))/1000
         document.getElementById('a_12').innerHTML = -Math.round(1000*Math.sin(theta1))/1000
         document.getElementById('a_21').innerHTML = Math.round(1000*Math.sin(theta1))/1000
         document.getElementById('a_22').innerHTML = Math.round(1000*Math.cos(theta1))/1000
         // console.log(document.getElementById('a_11'))
 
+        document.getElementById('d_11').innerHTML = document.getElementById('a_11').innerHTML
+        document.getElementById('d_12').innerHTML = document.getElementById('a_12').innerHTML
+        document.getElementById('d_21').innerHTML = document.getElementById('a_21').innerHTML
+        document.getElementById('d_22').innerHTML = document.getElementById('a_22').innerHTML
+
+        document.getElementById('d_13').innerHTML = document.getElementById('a_11').innerHTML*document.getElementById('L1').value;
+        document.getElementById('d_23').innerHTML = document.getElementById('a_21').innerHTML*document.getElementById('L2').value;
+
       }
-      function updateR12(theta2){
+      function updateT12(theta2){
         document.getElementById('b_11').innerHTML = Math.round(1000*Math.cos(theta2))/1000
         document.getElementById('b_12').innerHTML = -Math.round(1000*Math.sin(theta2))/1000
         document.getElementById('b_21').innerHTML = Math.round(1000*Math.sin(theta2))/1000
         document.getElementById('b_22').innerHTML = Math.round(1000*Math.cos(theta2))/1000
+
+        document.getElementById('e_11').innerHTML = document.getElementById('b_11').innerHTML
+        document.getElementById('e_12').innerHTML = document.getElementById('b_12').innerHTML
+        document.getElementById('e_21').innerHTML = document.getElementById('b_21').innerHTML
+        document.getElementById('e_22').innerHTML = document.getElementById('b_22').innerHTML
+
+        document.getElementById('e_13').innerHTML = document.getElementById('b_11').innerHTML*document.getElementById('L1').value;
+        document.getElementById('e_23').innerHTML = document.getElementById('b_21').innerHTML*document.getElementById('L2').value;
+
+
       }
 
-      function updateR02(){
-        let a_11 = document.getElementById('a_11').innerHTML
-        let a_12 = document.getElementById('a_12').innerHTML
-        let a_21 = document.getElementById('a_21').innerHTML
-        let a_22 = document.getElementById('a_22').innerHTML
+      function updateT02(){
+        let a_11 = document.getElementById('a_11').innerHTML;
+        let a_12 = document.getElementById('a_12').innerHTML;
+        let a_21 = document.getElementById('a_21').innerHTML;
+        let a_22 = document.getElementById('a_22').innerHTML;
 
-        let b_11 = document.getElementById('b_11').innerHTML
-        let b_12 = document.getElementById('b_12').innerHTML
-        let b_21 = document.getElementById('b_21').innerHTML
-        let b_22 = document.getElementById('b_22').innerHTML
+        let d_11 = document.getElementById('d_11').innerHTML;
+        let d_12 = document.getElementById('d_12').innerHTML;
+        let d_13 = document.getElementById('d_13').innerHTML;
+        let d_21 = document.getElementById('d_21').innerHTML;
+        let d_22 = document.getElementById('d_22').innerHTML;
+        let d_23 = document.getElementById('d_23').innerHTML;
+
+        let b_11 = document.getElementById('b_11').innerHTML;
+        let b_12 = document.getElementById('b_12').innerHTML;
+        let b_21 = document.getElementById('b_21').innerHTML;
+        let b_22 = document.getElementById('b_22').innerHTML;
+
+        let e_13 = document.getElementById('e_13').innerHTML;
+        let e_23 = document.getElementById('e_23').innerHTML;
+        let e_33 = 1
+
 
         document.getElementById('c_11').innerHTML = Math.round((a_11 * b_11 + a_12*b_21)*1000)/1000;
         document.getElementById('c_12').innerHTML = Math.round((a_11 * b_12 + a_12*b_22)*1000)/1000;
         document.getElementById('c_21').innerHTML = Math.round((a_21 * b_11 + a_22*b_21)*1000)/1000;
         document.getElementById('c_22').innerHTML = Math.round((a_21 * b_12 + a_22*b_22)*1000)/1000;
+
+        document.getElementById('f_11').innerHTML = document.getElementById('c_11').innerHTML;
+        document.getElementById('f_12').innerHTML = document.getElementById('c_12').innerHTML;
+        document.getElementById('f_21').innerHTML = document.getElementById('c_21').innerHTML;
+        document.getElementById('f_22').innerHTML = document.getElementById('c_22').innerHTML;
+
+        document.getElementById('f_13').innerHTML = Math.round((d_11 * e_13 + d_12*e_23 + d_13 * e_33)*1000)/1000;
+        document.getElementById('f_23').innerHTML = Math.round((d_21 * e_13 + d_22*e_23 + d_23 * e_33)*1000)/1000;
 
 
       }
